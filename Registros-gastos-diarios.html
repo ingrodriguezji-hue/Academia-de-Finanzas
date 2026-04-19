@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gastos Diarios - Gold Edition</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,1,0" />
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+  background-image: linear-gradient(rgba(12, 30, 38, 0.85), rgba(12, 30, 38, 0.95)), 
+                    url('—Pngtree—close-up of a detailed graph_16127929.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: white;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.app {
+  width: 100%;
+  max-width: 420px;
+  padding: 30px 20px;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.header h2 {
+  font-size: 22px;
+  font-weight: 700;
+  background: linear-gradient(to bottom, #f9e27d, #d4af37);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.back-header-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  color: #d4af37;
+  padding: 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+/* FORM CARD */
+.form-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+input, select {
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  background: rgba(12, 30, 38, 0.6);
+  color: white;
+  outline: none;
+  font-size: 14px;
+}
+
+input:focus, select:focus {
+  border-color: #d4af37;
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.filtros select {
+  flex: 1;
+  min-width: 80px;
+  font-size: 12px;
+  padding: 8px;
+}
+
+/* BOTONES PREMIUM */
+.btn-add {
+  background: linear-gradient(145deg, #d4af37, #8a6d3b);
+  color: #0c1e26;
+  border: none;
+  padding: 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: 0.3s;
+}
+
+.btn-add:hover {
+  transform: scale(1.02);
+  box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+}
+
+/* LISTA */
+.lista {
+  margin-top: 25px;
+}
+
+.item {
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 3px solid #d4af37;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  backdrop-filter: blur(5px);
+}
+
+.col-fecha { width: 70px; color: #8faab3; font-size: 10px; }
+.col-item { flex: 1; padding-left: 10px; font-weight: 500; }
+.col-rubro { width: 80px; text-align: right; color: #d4af37; font-size: 11px; }
+.col-monto { width: 85px; text-align: right; font-weight: 700; color: #fff; }
+
+.delete {
+  margin-left: 12px;
+  color: #ff6b6b;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* TOTAL BOX */
+.total {
+  margin-top: 20px;
+  padding: 20px;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 12px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 800;
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+/* GRAFICO & LEYENDA */
+canvas {
+  margin-top: 30px;
+  max-width: 100%;
+}
+
+.leyenda {
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 15px;
+  border-radius: 12px;
+}
+
+.back {
+  margin-top: 30px;
+  background: transparent;
+  width: 100%;
+  padding: 15px;
+  border-radius: 10px;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <div class="header">
+    <button class="back-header-btn" onclick="volver()">
+        <span class="material-symbols-rounded">arrow_back</span>
+    </button>
+    <h2>Gastos Diarios</h2>
+  </div>
+
+  <div class="form-card">
+    <input type="text" id="item" placeholder="¿En qué gastaste?">
+    
+    <select id="rubro">
+      <option>Salud</option>
+      <option>Educación</option>
+      <option>Salidas</option>
+      <option>Transporte</option>
+      <option>Hogar</option>
+      <option>Bienestar</option>
+      <option>Estética</option>
+      <option>Deporte</option>
+      <option>Alimentos</option>
+      <option>Servicios</option>
+      <option>Impuestos</option>
+      <option>Deudas</option>
+      <option>Inversiones</option>
+      <option>Regalos</option>
+      <option>Otros</option>
+    </select>
+
+    <input type="number" id="monto" placeholder="Monto ($)">
+
+    <button class="btn-add" onclick="agregar()">Añadir Registro</button>
+
+    <div class="filtros">
+      <select id="filtroDia" onchange="render()"><option value="">Día</option>
+        <script>for(let i=1;i<=31;i++) document.write(`<option value="${i}">${i}</option>`)</script>
+      </select>
+      <select id="filtroMes" onchange="render()">
+        <option value="">Mes</option>
+        <option value="1">Enero</option><option value="2">Febrero</option><option value="3">Marzo</option>
+        <option value="4">Abril</option><option value="5">Mayo</option><option value="6">Junio</option>
+        <option value="7">Julio</option><option value="8">Agosto</option><option value="9">Septiembre</option>
+        <option value="10">Octubre</option><option value="11">Noviembre</option><option value="12">Diciembre</option>
+      </select>
+      <select id="filtroAno" onchange="render()">
+        <option value="">Año</option>
+        <option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option>
+      </select>
+      <select id="filtroRubro" onchange="render()">
+        <option value="">Rubro</option>
+        <option>Salud</option><option>Educación</option><option>Salidas</option><option>Transporte</option>
+        <option>Hogar</option><option>Bienestar</option><option>Estética</option><option>Deporte</option>
+        <option>Alimentos</option><option>Servicios</option><option>Impuestos</option><option>Deudas</option>
+        <option>Inversiones</option><option>Regalos</option><option>Otros</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="lista" id="lista"></div>
+
+  <button class="btn-add" id="btnVerTodos" onclick="toggleVerTodos()" style="display:none; margin-top:10px; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(212,175,55,0.3);">Ver todos los gastos</button>
+
+  <div class="total" id="total">Total: $0</div>
+
+  <canvas id="grafico"></canvas>
+
+  <div class="leyenda" id="leyenda"></div>
+
+  <button class="back" onclick="volver()">Volver al menú</button>
+
+</div>
+
+<script>
+let gastos = JSON.parse(localStorage.getItem("gastosDiarios")) || [];
+gastos = gastos.map(g => ({
+  ...g,
+  fechaISO: g.fechaISO || new Date().toISOString()
+}));
+let mostrarTodos = false;
+
+function volver() { window.location.href = "index.html"; }
+
+function formatFecha(date) {
+  return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+}
+
+function agregar() {
+  const item = document.getElementById("item").value;
+  const rubro = document.getElementById("rubro").value;
+  const monto = parseFloat(document.getElementById("monto").value);
+  if (!item || !monto) return;
+
+  const fechaActual = new Date();
+  gastos.push({ 
+    item, rubro, monto,
+    fecha: formatFecha(fechaActual),
+    fechaISO: fechaActual.toISOString()
+  });
+
+  guardar();
+  document.getElementById("item").value = "";
+  document.getElementById("monto").value = "";
+  render();
+}
+
+function eliminar(i) {
+  gastos.splice(i, 1);
+  guardar();
+  render();
+}
+
+function guardar() { localStorage.setItem("gastosDiarios", JSON.stringify(gastos)); }
+
+function obtenerFiltros() {
+  return {
+    dia: document.getElementById("filtroDia").value,
+    mes: document.getElementById("filtroMes").value,
+    ano: document.getElementById("filtroAno").value,
+    rubro: document.getElementById("filtroRubro").value
+  };
+}
+
+function parsearFecha(gasto) {
+  return gasto.fechaISO ? new Date(gasto.fechaISO) : new Date();
+}
+
+function toggleVerTodos() {
+  mostrarTodos = !mostrarTodos;
+  render();
+}
+
+function render() {
+  const lista = document.getElementById("lista");
+  lista.innerHTML = "";
+  const filtros = obtenerFiltros();
+
+  const gastosFiltrados = gastos
+    .map((g, index) => ({ g, index }))
+    .filter(({ g }) => {
+      const fecha = parsearFecha(g);
+      if (filtros.dia && fecha.getDate() !== Number(filtros.dia)) return false;
+      if (filtros.mes && fecha.getMonth() + 1 !== Number(filtros.mes)) return false;
+      if (filtros.ano && fecha.getFullYear() !== Number(filtros.ano)) return false;
+      if (filtros.rubro && g.rubro !== filtros.rubro) return false;
+      return true;
+    });
+
+  const gastosAMostrar = mostrarTodos ? gastosFiltrados : gastosFiltrados.slice(-5);
+  const btn = document.getElementById("btnVerTodos");
+  btn.style.display = gastosFiltrados.length > 5 ? "block" : "none";
+  btn.innerText = mostrarTodos ? "Ver últimos 5" : "Ver todos los gastos";
+
+  let totalAcumulado = 0;
+  gastosAMostrar.forEach(({ g, index }) => {
+    totalAcumulado += g.monto;
+    lista.innerHTML += `
+      <div class="item">
+        <div class="col-fecha">${g.fecha}</div>
+        <div class="col-item">${g.item}</div>
+        <div class="col-rubro">${g.rubro}</div>
+        <div class="col-monto">$${g.monto.toLocaleString()}</div>
+        <span class="delete" onclick="eliminar(${index})">
+            <span class="material-symbols-rounded" style="font-size:18px">delete</span>
+        </span>
+      </div>
+    `;
+  });
+
+  document.getElementById("total").innerText = "Total: $" + totalAcumulado.toLocaleString();
+  dibujarGrafico(gastosFiltrados.map(({ g }) => g));
+}
+
+function dibujarGrafico(gastosLista) {
+  const canvas = document.getElementById("grafico");
+  const ctx = canvas.getContext("2d");
+  canvas.width = 300; canvas.height = 300;
+
+  let porRubro = {};
+  gastosLista.forEach(g => porRubro[g.rubro] = (porRubro[g.rubro] || 0) + g.monto);
+
+  const totalGasto = Object.values(porRubro).reduce((a, b) => a + b, 0);
+  const colores = ["#d4af37", "#f9e27d", "#8faab3", "#4cd964", "#ff6b6b", "#5ac8fa", "#ffd60a", "#bf5af2", "#ff9f0a", "#00c7be"];
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const leyenda = document.getElementById("leyenda");
+  leyenda.innerHTML = "";
+  if (totalGasto === 0) return;
+
+  let start = 0;
+  Object.entries(porRubro).forEach(([rubro, monto], i) => {
+    const porcentaje = ((monto / totalGasto) * 100).toFixed(1);
+    const slice = (monto / totalGasto) * 2 * Math.PI;
+    const color = colores[i % colores.length];
+
+    ctx.beginPath();
+    ctx.moveTo(150, 150);
+    ctx.arc(150, 150, 110, start, start + slice);
+    ctx.fillStyle = color;
+    ctx.fill();
+    start += slice;
+
+    leyenda.innerHTML += `
+      <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:8px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom:4px;">
+        <div style="display:flex; align-items:center;">
+          <span style="background:${color}; width:8px; height:8px; display:inline-block; border-radius:50%; margin-right:8px;"></span>
+          ${rubro}
+        </div>
+        <div style="font-weight:700;">${porcentaje}% • $${monto.toLocaleString()}</div>
+      </div>
+    `;
+  });
+}
+
+window.onload = render;
+</script>
+
+</body>
+</html>
