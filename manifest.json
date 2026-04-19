@@ -1,0 +1,51 @@
+{
+  "name": "Mi App Finanzas",
+  "short_name": "Finanzas",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+
+Guardás ✅
+
+🧩 🟢 Crear el service-worker.js (igual de importante)
+
+Hacés lo mismo:
+
+👉 Nuevo archivo:
+service-worker.js
+👉 Pegás esto:
+self.addEventListener("install", () => {
+  console.log("Service Worker listo");
+});
+
+Guardás ✅
+
+🧠 ESTRUCTURA FINAL (clave)
+
+Tu carpeta tiene que quedar así:
+
+APP FINANZAS/
+│
+├── index.html
+├── manifest.json ✅
+├── service-worker.js ✅
+│
+└── public/
+    └── icons/
+        ├── icon-192.png
+        └── icon-512.png
+🚨 ERRORES QUE TENÍ
