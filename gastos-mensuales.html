@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gastos Mensuales mes promedio - Gold Edition</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,1,0" />
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+  /* Fondo con imagen y capa de oscuridad premium */
+  background-image: linear-gradient(rgba(12, 30, 38, 0.85), rgba(12, 30, 38, 0.95)), 
+                    url('—Pngtree—close-up of a detailed graph_16127929.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: white;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.app-container {
+  width: 100%;
+  max-width: 420px;
+  padding: 80px 20px 30px;
+}
+
+/* HEADER */
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: rgba(12, 30, 38, 0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  z-index: 100;
+}
+
+.back-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  color: #d4af37;
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(to bottom, #f9e27d, #d4af37);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* FILAS Y SECCIONES */
+.section-title {
+  margin: 20px 0 10px;
+  font-size: 12px;
+  color: #d4af37;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 800;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.label-box {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  font-size: 14px;
+}
+
+/* Inputs de nombre editables en EXTRAS */
+.input-label {
+  background: transparent;
+  border: none;
+  color: #cbdce0;
+  font-size: 14px;
+  width: 100%;
+  outline: none;
+}
+
+.input-label:focus {
+  color: #f9e27d;
+}
+
+.input-box {
+  width: 40%;
+}
+
+.input-box input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  background: rgba(12, 30, 38, 0.6);
+  color: white;
+  outline: none;
+}
+
+.input-box input:focus {
+  border-color: #d4af37;
+}
+
+/* RESUMEN TOTALES */
+.summary {
+  margin-top: 25px;
+  background: rgba(212, 55, 55, 0.1);
+  border: 1px solid rgba(212, 55, 55, 0.3);
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+.total {
+  font-size: 26px;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(212, 55, 55, 0.4);
+  margin-top: 5px;
+}
+
+/* BOTONES */
+.buttons {
+  margin-top: 30px;
+}
+
+button.action-btn {
+  width: 100%;
+  padding: 15px;
+  border-radius: 12px;
+  border: none;
+  margin-bottom: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.save {
+  background: linear-gradient(145deg, #d4af37, #8a6d3b);
+  color: #0c1e26;
+}
+
+.save:hover {
+  transform: scale(1.02);
+  box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+}
+
+.back {
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.back:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <button class="back-button" onclick="volverMenu()">
+    <span class="material-symbols-rounded">arrow_back</span>
+  </button>
+  <div class="title">Gastos Mensuales Tipicos en mes promedio</div>
+  <div style="width:50px;"></div>
+</div>
+
+<div class="app-container">
+
+<div class="section-title">Gastos Fijos</div>
+<div class="row"><div class="label-box">Alquiler</div><div class="input-box"><input type="number" id="alquiler" oninput="calcular()"></div></div>
+<div class="row"><div class="label-box">Auto</div><div class="input-box"><input type="number" id="auto" oninput="calcular()"></div></div>
+<div class="row"><div class="label-box">Educación</div><div class="input-box"><input type="number" id="educacion" oninput="calcular()"></div></div>
+<div class="row"><div class="label-box">Servicios</div><div class="input-box"><input type="number" id="servicios" oninput="calcular()"></div></div>
+
+<div class="section-title">Gastos Variables</div>
+<div class="row"><div class="label-box">Alimentos</div><div class="input-box"><input type="number" id="alimentos" oninput="calcular()"></div></div>
+<div class="row"><div class="label-box">Farmacia</div><div class="input-box"><input type="number" id="farmacia" oninput="calcular()"></div></div>
+<div class="row"><div class="label-box">Indumentaria</div><div class="input-box"><input type="number" id="indumentaria" oninput="calcular()"></div></div>
+<div class="row"><div class="label-box">Ocio</div><div class="input-box"><input type="number" id="ocio" oninput="calcular()"></div></div>
+<div class="row"><div class="label-box">Otros</div><div class="input-box"><input type="number" id="otros" oninput="calcular()"></div></div>
+
+<div class="section-title">Extras (Personalizables)</div>
+<div class="row">
+    <div class="label-box"><input type="text" id="label_extra1" class="input-label" value="Extra 1"></div>
+    <div class="input-box"><input type="number" id="extra1" oninput="calcular()"></div>
+</div>
+<div class="row">
+    <div class="label-box"><input type="text" id="label_extra2" class="input-label" value="Extra 2"></div>
+    <div class="input-box"><input type="number" id="extra2" oninput="calcular()"></div>
+</div>
+<div class="row">
+    <div class="label-box"><input type="text" id="label_extra3" class="input-label" value="Extra 3"></div>
+    <div class="input-box"><input type="number" id="extra3" oninput="calcular()"></div>
+</div>
+
+<div class="summary">
+  <div style="font-size: 11px; color: #d4af37; text-transform: uppercase;">Total Acumulado</div>
+  <div class="total" id="totalGeneral">$0</div>
+  
+  <div style="display:flex; justify-content: space-around; margin-top:15px; font-size: 13px;">
+    <div>Fijos: <span id="totalFijos" style="font-weight:700">$0</span></div>
+    <div>Variables: <span id="totalVariables" style="font-weight:700">$0</span></div>
+  </div>
+</div>
+
+<div class="buttons">
+  <button class="action-btn save" onclick="guardar()">Guardar Cambios</button>
+  <button class="action-btn back" onclick="volverMenu()">Volver</button>
+</div>
+
+</div>
+
+<script>
+function volverMenu(){
+  window.location.href="index.html";
+}
+
+function v(id){
+  return parseFloat(document.getElementById(id).value)||0;
+}
+
+function t(id){
+  return document.getElementById(id).value;
+}
+
+function calcular(){
+  let fijos = v("alquiler")+v("auto")+v("educacion")+v("servicios");
+  let variables = v("alimentos")+v("farmacia")+v("indumentaria")+v("ocio")+v("otros");
+  let extras = v("extra1")+v("extra2")+v("extra3");
+
+  let totalVar = variables + extras;
+  let total = fijos + totalVar;
+
+  document.getElementById("totalFijos").innerText="$"+fijos.toLocaleString();
+  document.getElementById("totalVariables").innerText="$"+totalVar.toLocaleString();
+  document.getElementById("totalGeneral").innerText="$"+total.toLocaleString();
+}
+
+function guardar(){
+  const data = {
+    valores: {
+        alquiler: v("alquiler"), auto: v("auto"), educacion: v("educacion"), servicios: v("servicios"),
+        alimentos: v("alimentos"), farmacia: v("farmacia"), indumentaria: v("indumentaria"),
+        ocio: v("ocio"), otros: v("otros"),
+        extra1: v("extra1"), extra2: v("extra2"), extra3: v("extra3")
+    },
+    nombres: {
+        label_extra1: t("label_extra1"),
+        label_extra2: t("label_extra2"),
+        label_extra3: t("label_extra3")
+    }
+  };
+
+  localStorage.setItem("misGastos_v2", JSON.stringify(data));
+  alert("¡Datos guardados con éxito! ✔");
+}
+
+window.onload = function() {
+  const data = JSON.parse(localStorage.getItem("misGastos_v2"));
+  if (data) {
+    if (data.valores) {
+      Object.keys(data.valores).forEach(id => {
+        if (document.getElementById(id)) document.getElementById(id).value = data.valores[id];
+      });
+    }
+    if (data.nombres) {
+      Object.keys(data.nombres).forEach(id => {
+        if (document.getElementById(id)) document.getElementById(id).value = data.nombres[id];
+      });
+    }
+  }
+  calcular();
+};
+</script>
+
+</body>
+</html>

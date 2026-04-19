@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perfil Inversor - Gold Edition</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,1,0" />
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+  /* Fondo consistente con el resto de la App */
+  background-image: linear-gradient(rgba(12, 30, 38, 0.85), rgba(12, 30, 38, 0.95)), 
+                    url('—Pngtree—close-up of a detailed graph_16127929.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  color: white;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.app-container {
+  width: 100%;
+  max-width: 420px;
+  padding: 80px 20px 30px;
+}
+
+/* HEADER PREMIUM */
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: rgba(12, 30, 38, 0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  z-index: 999;
+}
+
+.back-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  color: #d4af37;
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(to bottom, #f9e27d, #d4af37);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* CARDS GLASSMORPHISM */
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 22px;
+  border-radius: 12px; /* Radios cortos */
+  margin-bottom: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+/* TEXTOS DE PERFIL */
+.perfil {
+  font-size: 26px;
+  font-weight: 800;
+  text-align: center;
+  color: #f9e27d;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+.descripcion {
+  font-size: 14px;
+  color: #cbdce0;
+  margin-top: 10px;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* GRAFICO TIPO DONUT */
+.chart-container {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 25px auto;
+}
+
+.chart {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  /* El donut se genera en JS */
+}
+
+/* El círculo interno para hacer el efecto Donut */
+.chart::after {
+  content: "";
+  position: absolute;
+  top: 15%;
+  left: 15%;
+  width: 70%;
+  height: 70%;
+  background: #0e222b; /* Color del fondo de la app */
+  border-radius: 50%;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+}
+
+/* LISTA DE ACTIVOS */
+.lista {
+  margin-top: 20px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+  padding: 10px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+  border-left: 3px solid transparent;
+}
+
+.color-box {
+  width: 12px;
+  height: 40px;
+  border-radius: 4px;
+}
+
+.texto {
+  font-size: 14px;
+}
+
+.texto strong {
+  display: block;
+  color: #fff;
+  font-size: 15px;
+}
+
+.texto span {
+  display: block;
+  font-size: 12px;
+  color: #8faab3;
+}
+
+/* BOTON VOLVER */
+.footer-btn {
+  margin-top: 10px;
+}
+
+.footer-btn button {
+  width: 100%;
+  padding: 16px;
+  border-radius: 12px;
+  border: none;
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.footer-btn button:hover {
+  background: rgba(212, 175, 55, 0.1);
+  border-color: #d4af37;
+  color: #d4af37;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <button class="back-button" onclick="volverMenu()">
+    <span class="material-symbols-rounded">arrow_back</span>
+  </button>
+  <div class="title">Perfil Inversor</div>
+  <div style="width:40px;"></div>
+</div>
+
+<div class="app-container">
+
+  <div class="card">
+    <div style="font-size: 11px; text-transform: uppercase; color: #8faab3; text-align: center; letter-spacing: 2px;">Tu Estrategia es</div>
+    <div class="perfil" id="perfil">---</div>
+    <div class="descripcion" id="descripcion">---</div>
+  </div>
+
+  <div class="card">
+    <div style="text-align:center; font-size: 13px; font-weight: 700; color: #d4af37; text-transform: uppercase; letter-spacing: 1px;">Cartera Sugerida</div>
+    
+    <div class="chart-container">
+        <div id="chart" class="chart"></div>
+    </div>
+
+    <div id="cartera" class="lista"></div>
+  </div>
+
+  <div class="footer-btn">
+    <button onclick="volverMenu()">Volver al Panel Central</button>
+  </div>
+
+</div>
+
+<script>
+function volverMenu() {
+  window.location.href = "index.html";
+}
+
+function calcularPerfil() {
+  // LÓGICA ORIGINAL PRESERVADA
+  const datos = JSON.parse(localStorage.getItem("misDatos")) || {};
+  const ingresos = JSON.parse(localStorage.getItem("misIngresos")) || {};
+  const objetivos = JSON.parse(localStorage.getItem("misObjetivos")) || [];
+
+  let score = 0;
+
+  if (datos.educacion === "Alto") score += 2;
+  if (datos.educacion === "Medio") score += 1;
+
+  const totalIngresos = (parseFloat(ingresos.sueldo) || 0) + (parseFloat(ingresos.secundario) || 0);
+  if (totalIngresos > 800000) score += 2;
+  else if (totalIngresos > 300000) score += 1;
+
+  if (objetivos.includes("Invertir")) score += 2;
+  if (objetivos.includes("Libertad financiera")) score += 2;
+
+  let perfil, descripcion, cartera;
+
+  // AJUSTE DE COLORES PARA MODO GOLD
+  if (score <= 2) {
+    perfil = "Conservador";
+    descripcion = "Priorizás la preservación de capital y estabilidad ante todo.";
+    cartera = [
+      {n:"Plazo fijo / Money Market", v:60, c:"#d4af37", ej:"FCI Bancarios", tir:"Renta Fija ARS"},
+      {n:"Bonos Soberanos / Corporativos", v:30, c:"#8faab3", ej:"BOPREAL / ONs", tir:"Renta Fija USD"},
+      {n:"Cauciones", v:10, c:"#cbdce0", ej:"ByMA", tir:"Liquidez Inmediata"}
+    ];
+  } else if (score <= 4) {
+    perfil = "Moderado";
+    descripcion = "Buscás un crecimiento sostenido aceptando volatilidad controlada.";
+    cartera = [
+      {n:"ETFs Indizados", v:40, c:"#d4af37", ej:"SPY (S&P 500)", tir:"Hist. 8-10% USD"},
+      {n:"Bonos Hard Dollar", v:30, c:"#f9e27d", ej:"GD30 / AL30", tir:"Renta Fija Alta"},
+      {n:"CEDEARs Valor", v:30, c:"#8faab3", ej:"KO, PEP, WMT", tir:"Dividendos"}
+    ];
+  } else {
+    perfil = "Agresivo";
+    descripcion = "Maximizás rendimientos asumiendo riesgos elevados y volatilidad.";
+    cartera = [
+      {n:"Acciones Growth / Tech", v:40, c:"#d4af37", ej:"NVDA, TSLA, AMZN", tir:"Crecimiento Capital"},
+      {n:"Criptoactivos", v:30, c:"#f9e27d", ej:"BTC / ETH", tir:"Alta Volatilidad"},
+      {n:"ETFs Apalancados / Growth", v:30, c:"#8faab3", ej:"QQQ / ARK", tir:"Máximo Riesgo"}
+    ];
+  }
+
+  document.getElementById("perfil").innerText = perfil;
+  document.getElementById("descripcion").innerText = descripcion;
+
+  // GENERAR GRÁFICO TIPO CONIC GRADIENT (DONUT)
+  let acumulado = 0;
+  let gradiente = "conic-gradient(";
+  cartera.forEach((item, i) => {
+    let start = acumulado;
+    acumulado += item.v;
+    gradiente += `${item.c} ${start}% ${acumulado}%`;
+    if (i < cartera.length - 1) gradiente += ",";
+  });
+  gradiente += ")";
+  document.getElementById("chart").style.background = gradiente;
+
+  // RENDERIZAR LISTA
+  const contenedor = document.getElementById("cartera");
+  contenedor.innerHTML = "";
+
+  cartera.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "item";
+    div.style.borderLeftColor = item.c;
+
+    div.innerHTML = `
+      <div class="color-box" style="background:${item.c}"></div>
+      <div class="texto">
+        <strong>${item.n} (${item.v}%)</strong>
+        <span>Instrumento: ${item.ej}</span>
+        <span style="color:${item.c}">${item.tir}</span>
+      </div>
+    `;
+    contenedor.appendChild(div);
+  });
+}
+
+window.onload = calcularPerfil;
+</script>
+
+</body>
+</html>
