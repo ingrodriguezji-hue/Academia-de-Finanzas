@@ -243,10 +243,17 @@ function volverMenu() {
   window.location.href = "index.html";
 }
 
+<script>
+function volverMenu() {
+  window.location.href = "index.html";
+}
+
 function calcularResultados() {
-  // --- LÓGICA ORIGINAL PRESERVADA AL 100% ---
+  // INGRESOS desde diferentes fuentes
   const ingresosData = JSON.parse(localStorage.getItem("misIngresos")) || {};
-  const totalIngresos =
+  const datosUsuario = JSON.parse(localStorage.getItem("misDatos")) || {};
+
+  let totalIngresos =
     (ingresosData.sueldo || 0) +
     (ingresosData.secundario || 0) +
     (ingresosData.pasivo || 0) +
@@ -254,6 +261,12 @@ function calcularResultados() {
     (ingresosData.otro2 || 0) +
     (ingresosData.otro3 || 0);
 
+  // 🔥 FIX: si no hay ingresos cargados en misIngresos, usar los de misDatos
+  if (totalIngresos === 0) {
+    totalIngresos = Number(datosUsuario.ingresos) || 0;
+  }
+
+  // GASTOS
   const gastosData = JSON.parse(localStorage.getItem("misGastos")) || {};
   let totalGastos = 0;
 
@@ -267,11 +280,9 @@ function calcularResultados() {
 
   const resultado = totalIngresos - totalGastos;
 
-  const datosUsuario = JSON.parse(localStorage.getItem("misDatos")) || {};
-  const patrimonio = datosUsuario.patrimonio || 0;
-  // --- FIN DE LÓGICA ORIGINAL ---
+  const patrimonio = Number(datosUsuario.patrimonio) || 0;
 
-  // Actualización de UI
+  // UI
   document.getElementById("ingresos").innerText = "$" + totalIngresos.toLocaleString();
   document.getElementById("gastos").innerText = "$" + totalGastos.toLocaleString();
   document.getElementById("patrimonio").innerText = "$" + patrimonio.toLocaleString();
@@ -300,6 +311,5 @@ function calcularResultados() {
 
 window.onload = calcularResultados;
 </script>
-
 </body>
 </html>
