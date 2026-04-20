@@ -301,66 +301,91 @@
   </div>
 
   <script>
-    function volverMenu() {
-      window.location.href = "index.html";
+  function volverMenu() {
+    window.location.href = "index.html";
+  }
+
+  function irObjetivos() {
+    window.location.href = "mis-objetivos.html";
+  }
+
+  function guardarDatos() {
+    const situacion = document.getElementById("situacion").value;
+    const ingresosInput = document.getElementById("ingresos").value;
+    const educacion = document.getElementById("educacion").value;
+    const patrimonioInput = document.getElementById("patrimonio").value;
+    const nivel = document.getElementById("nivel").value;
+
+    if (!situacion || !ingresosInput || !educacion) {
+      alert("Por favor completá los campos obligatorios.");
+      return;
     }
 
-    function irObjetivos() {
-      window.location.href = "mis-objetivos.html";
-    }
+    // 🔥 Convertir a número (CLAVE)
+    const ingresos = Number(ingresosInput);
+    const patrimonio = Number(patrimonioInput);
 
-    function guardarDatos() {
-      const situacion = document.getElementById("situacion").value;
-      const ingresos = document.getElementById("ingresos").value;
-      const educacion = document.getElementById("educacion").value;
-      const patrimonio = document.getElementById("patrimonio").value;
-      const nivel = document.getElementById("nivel").value;
+    // Bienes
+    const bienesSeleccionados = [];
+    document.querySelectorAll(".checkbox-group input:checked").forEach(el => {
+      bienesSeleccionados.push(el.value);
+    });
 
-      if (!situacion || !ingresos || !educacion) {
-        alert("Por favor completá los campos obligatorios.");
-        return;
-      }
-
-      const bienesSeleccionados = [];
-      document.querySelectorAll(".checkbox-group input:checked").forEach(el => {
-        bienesSeleccionados.push(el.value);
-      });
-
-      const datos = {
-        situacion,
-        ingresos,
-        educacion,
-        patrimonio,
-        bienes: bienesSeleccionados,
-        nivel
-      };
-
-      localStorage.setItem("misDatos", JSON.stringify(datos));
-
-      const mensaje = document.getElementById("mensaje");
-      mensaje.style.display = "block";
-
-      setTimeout(() => {
-        mensaje.style.display = "none";
-      }, 2000);
-    }
-
-    window.onload = function () {
-      const datosGuardados = JSON.parse(localStorage.getItem("misDatos"));
-
-      if (datosGuardados) {
-        document.getElementById("situacion").value = datosGuardados.situacion;
-        document.getElementById("ingresos").value = datosGuardados.ingresos;
-        document.getElementById("educacion").value = datosGuardados.educacion;
-        document.getElementById("patrimonio").value = datosGuardados.patrimonio;
-        document.getElementById("nivel").value = datosGuardados.nivel;
-
-        document.querySelectorAll(".checkbox-group input").forEach(el => {
-          el.checked = (datosGuardados.bienes || []).includes(el.value);
-        });
-      }
+    // 🔹 Guardado principal
+    const datos = {
+      situacion,
+      ingresos,
+      educacion,
+      patrimonio,
+      bienes: bienesSeleccionados,
+      nivel
     };
-  </script>
+
+    localStorage.setItem("misDatos", JSON.stringify(datos));
+
+    // 🔥 CREAR estructura que usa la pantalla de resultados
+    const ingresosEstructura = {
+      sueldo: ingresos,
+      secundario: 0,
+      pasivo: 0,
+      otro1: 0,
+      otro2: 0,
+      otro3: 0
+    };
+
+    localStorage.setItem("misIngresos", JSON.stringify(ingresosEstructura));
+
+    // (Opcional) si todavía no tenés gastos, lo inicializamos
+    if (!localStorage.getItem("misGastos")) {
+      localStorage.setItem("misGastos", JSON.stringify({}));
+    }
+
+    // UI feedback
+    const mensaje = document.getElementById("mensaje");
+    mensaje.style.display = "block";
+
+    setTimeout(() => {
+      mensaje.style.display = "none";
+    }, 2000);
+  }
+
+  // 🔄 Cargar datos guardados
+  window.onload = function () {
+    const datosGuardados = JSON.parse(localStorage.getItem("misDatos"));
+
+    if (datosGuardados) {
+      document.getElementById("situacion").value = datosGuardados.situacion;
+      document.getElementById("ingresos").value = datosGuardados.ingresos;
+      document.getElementById("educacion").value = datosGuardados.educacion;
+      document.getElementById("patrimonio").value = datosGuardados.patrimonio;
+      document.getElementById("nivel").value = datosGuardados.nivel;
+
+      document.querySelectorAll(".checkbox-group input").forEach(el => {
+        el.checked = (datosGuardados.bienes || []).includes(el.value);
+      });
+    }
+  };
+</script>
 
 </body>
 </html>
