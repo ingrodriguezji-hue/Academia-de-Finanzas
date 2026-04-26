@@ -16,7 +16,6 @@
 }
 
 body {
-  /* Configuración de la imagen de fondo - Asegúrate de tener la imagen correcta */
   background-image: linear-gradient(rgba(12, 30, 38, 0.8), rgba(12, 30, 38, 0.8)), 
                     url('fondo-cuadro.PNG');
   background-size: cover;
@@ -34,7 +33,6 @@ body {
   padding: 25px;
 }
 
-/* HEADER */
 .header {
   display: flex;
   align-items: center;
@@ -56,7 +54,6 @@ body {
 
 h1 { font-size: 20px; font-weight: 600; }
 
-/* CARDS GLASSMORPHISM */
 .card {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(15px);
@@ -92,12 +89,10 @@ h1 { font-size: 20px; font-weight: 600; }
 
 .card-small h2 { font-size: 14px; }
 
-/* COLORES DINÁMICOS */
 .activos { color: #4cd964; text-shadow: 0 0 10px rgba(76, 217, 100, 0.3); }
 .pasivos { color: #ff6b6b; text-shadow: 0 0 10px rgba(255, 107, 107, 0.3); }
 .patrimonio-color { color: #4facfe; text-shadow: 0 0 10px rgba(79, 172, 254, 0.3); }
 
-/* RESULTADO */
 .resultado {
   padding: 25px;
   border-radius: 24px;
@@ -131,26 +126,25 @@ h1 { font-size: 20px; font-weight: 600; }
   text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
-/* --- ESTILOS RECOMENDACIONES (MODIFICADOS) --- */
 .recom-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
     background: rgba(255,255,255,0.08);
-    padding: 15px; /* Aumentado padding para dar más aire */
+    padding: 15px;
     border-radius: 12px;
-    margin-top: 10px; /* Aumentado margen */
-    font-size: 16px; /* AUMENTADO: Texto general de la recomendación */
+    margin-top: 10px;
+    font-size: 16px;
 }
 
 .item-label {
     display: flex;
     align-items: center;
-    gap: 12px; /* Aumentado gap */
+    gap: 12px;
 }
 
 .recom-icon {
-    font-size: 24px; /* AUMENTADO: Iconos dentro de las recomendaciones */
+    font-size: 24px;
     color: #8faab3;
 }
 </style>
@@ -202,37 +196,32 @@ h1 { font-size: 20px; font-weight: 600; }
         <span class="material-symbols-rounded" style="color: #cbdce0; font-size: 24px;">safe</span>
         <span style="font-size: 16px; color: #cbdce0;">Fondo de Reserva (6 meses)</span>
     </div>
-    <h2 id="fondoObjetivo" style="margin: 5px 0 20px;">$0</h2>
+    <h2 id="fondoObjetivo">$0</h2>
 
     <div class="recom-item">
         <div class="item-label">
             <span class="material-symbols-rounded recom-icon">calendar_month</span>
             <span>Aporte mensual (10%)</span>
         </div>
-        <span id="reservaMensual" style="font-weight: bold; font-size: 18px;">$0</span>
+        <span id="reservaMensual">$0</span>
     </div>
   </div>
 
   <div class="card" style="text-align: left;">
-    <div class="item-label" style="margin-bottom: 15px;">
-        <span class="material-symbols-rounded" style="color: #cbdce0; font-size: 24px;">pie_chart</span>
-        <span style="font-size: 16px; color: #cbdce0;">Distribución recomendada</span>
-    </div>
-
     <div class="recom-item">
         <div class="item-label">
             <span class="material-symbols-rounded recom-icon">savings</span>
-            <span>Ahorro (10%)</span>
+            <span>Ahorro</span>
         </div>
-        <span id="ahorro" style="font-weight: bold; font-size: 18px;">$0</span>
+        <span id="ahorro">$0</span>
     </div>
 
     <div class="recom-item">
         <div class="item-label">
             <span class="material-symbols-rounded recom-icon">query_stats</span>
-            <span>Inversión (15%)</span>
+            <span>Inversión</span>
         </div>
-        <span id="inversion" style="font-weight: bold; font-size: 18px;">$0</span>
+        <span id="inversion">$0</span>
     </div>
   </div>
 
@@ -243,73 +232,75 @@ function volverMenu() {
   window.location.href = "index.html";
 }
 
-<script>
-function volverMenu() {
-  window.location.href = "index.html";
+// 🔥 ARREGLADO: estaba roto el script
+function obtenerIngresos() {
+  return Number(localStorage.getItem("totalIngresos")) || 0;
+}
+
+// 🔥 NUEVO: función backup más robusta
+function obtenerIngresosTotal() {
+  const estructurado = JSON.parse(localStorage.getItem("misIngresos")) || {};
+
+  let total =
+    (estructurado.sueldo || 0) +
+    (estructurado.secundario || 0) +
+    (estructurado.pasivo || 0) +
+    (estructurado.otro1 || 0) +
+    (estructurado.otro2 || 0) +
+    (estructurado.otro3 || 0);
+
+  if (!total || total === 0) {
+    total = obtenerIngresos();
+  }
+
+  return total;
+}
+
+// 🔥 NUEVO: función debug
+function debugFinanzas() {
+  console.log("DEBUG INGRESOS:", localStorage.getItem("misIngresos"));
+  console.log("DEBUG TOTAL:", localStorage.getItem("totalIngresos"));
+  console.log("DEBUG GASTOS:", localStorage.getItem("misGastos"));
 }
 
 function calcularResultados() {
-  // INGRESOS desde diferentes fuentes
-  const ingresosData = JSON.parse(localStorage.getItem("misIngresos")) || {};
-  const datosUsuario = JSON.parse(localStorage.getItem("misDatos")) || {};
 
-  let totalIngresos =
-    (ingresosData.sueldo || 0) +
-    (ingresosData.secundario || 0) +
-    (ingresosData.pasivo || 0) +
-    (ingresosData.otro1 || 0) +
-    (ingresosData.otro2 || 0) +
-    (ingresosData.otro3 || 0);
+  const totalIngresos = obtenerIngresosTotal();
 
-  // 🔥 FIX: si no hay ingresos cargados en misIngresos, usar los de misDatos
-  if (totalIngresos === 0) {
-    totalIngresos = Number(datosUsuario.ingresos) || 0;
-  }
-
-  // GASTOS
   const gastosData = JSON.parse(localStorage.getItem("misGastos")) || {};
   let totalGastos = 0;
 
-  if (gastosData.fijos || gastosData.variables || gastosData.extras) {
-    Object.values(gastosData.fijos || {}).forEach(v => totalGastos += v || 0);
-    Object.values(gastosData.variables || {}).forEach(v => totalGastos += v || 0);
-    Object.values(gastosData.extras || {}).forEach(v => totalGastos += v || 0);
-  } else {
-    Object.values(gastosData).forEach(v => totalGastos += v || 0);
-  }
+  Object.values(gastosData).forEach(v => totalGastos += v || 0);
 
   const resultado = totalIngresos - totalGastos;
 
-  const patrimonio = Number(datosUsuario.patrimonio) || 0;
-
-  // UI
   document.getElementById("ingresos").innerText = "$" + totalIngresos.toLocaleString();
   document.getElementById("gastos").innerText = "$" + totalGastos.toLocaleString();
-  document.getElementById("patrimonio").innerText = "$" + patrimonio.toLocaleString();
+  document.getElementById("patrimonio").innerText = "$" + resultado.toLocaleString();
 
-  const resultadoBox = document.getElementById("resultadoBox");
   document.getElementById("resValue").innerText = "Resultado: $" + resultado.toLocaleString();
 
   if (resultado >= 0) {
     resultadoBox.className = "card resultado positivo";
-    document.getElementById("estado").innerText = "✔ Flujo positivo";
+    estado.innerText = "✔ Flujo positivo";
   } else {
     resultadoBox.className = "card resultado negativo";
-    document.getElementById("estado").innerText = "⚠ Estás gastando más de lo que ganás";
+    estado.innerText = "⚠ Estás gastando más de lo que ganás";
   }
 
-  const fondoObjetivo = totalGastos * 6;
-  const reservaMensual = totalIngresos * 0.10;
-  const ahorro = totalIngresos * 0.10;
-  const inversion = totalIngresos * 0.15;
+  document.getElementById("fondoObjetivo").innerText = "$" + (totalGastos * 6).toLocaleString();
+  document.getElementById("reservaMensual").innerText = "$" + (totalIngresos * 0.10).toLocaleString();
+  document.getElementById("ahorro").innerText = "$" + (totalIngresos * 0.10).toLocaleString();
+  document.getElementById("inversion").innerText = "$" + (totalIngresos * 0.15).toLocaleString();
 
-  document.getElementById("fondoObjetivo").innerText = "$" + fondoObjetivo.toLocaleString();
-  document.getElementById("reservaMensual").innerText = "$" + reservaMensual.toLocaleString();
-  document.getElementById("ahorro").innerText = "$" + ahorro.toLocaleString();
-  document.getElementById("inversion").innerText = "$" + inversion.toLocaleString();
+  debugFinanzas();
 }
+
+// 🔥 NUEVO: auto refresh si cambian datos
+window.addEventListener("storage", calcularResultados);
 
 window.onload = calcularResultados;
 </script>
+
 </body>
 </html>
