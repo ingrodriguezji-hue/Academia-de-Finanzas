@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gastos Integrados PRO</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI';}
+
+body{
+  background: linear-gradient(#0c1e26,#122f3a);
+  color:white;
+  display:flex;
+  justify-content:center;
+}
+
+.app{
+  width:100%;
+  max-width:420px;
+  padding:20px;
+}
+
+.section-title{
+  margin:20px 0 10px;
+  color:#d4af37;
+  font-weight:bold;
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:8px;
+  gap:8px;
+}
+
+input,select{
+  padding:10px;
+  border-radius:8px;
+  border:none;
+  background:#1b3a44;
+  color:white;
+}
+
+input{width:120px;}
+
+.input-label{
+  width:100%;
+  background:transparent;
+  border:none;
+  color:#cbdce0;
+}
+
+.btn{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  margin-top:10px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.add{background:#2c6f80;}
+.save{background:#d4af37;color:black;}
+.back{background:#1b3a44;color:white;}
+
+.item{
+  background:#1b3a44;
+  padding:8px;
+  border-radius:8px;
+  margin-top:5px;
+  display:flex;
+  justify-content:space-between;
+  font-size:12px;
+}
+
+.total{
+  margin-top:15px;
+  text-align:center;
+  font-size:18px;
+  font-weight:bold;
+}
+
+canvas{
+  margin-top:20px;
+  width:100%;
+}
+
+.leyenda{
+  margin-top:10px;
+  font-size:12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- BOTON ARRIBA -->
+<button class="btn back" onclick="volver()">← Volver al menú</button>
+
+<!-- GASTOS FIJOS -->
+<div class="section-title">Gastos Fijos</div>
+
+<div class="row"><span>Alquiler</span><input id="alquiler"></div>
+<div class="row"><span>Auto</span><input id="auto"></div>
+<div class="row"><span>Educación</span><input id="educacion"></div>
+<div class="row"><span>Servicios</span><input id="servicios"></div>
+
+<!-- CUSTOM -->
+<div class="row">
+<input type="text" id="extra_fijo1_nombre" class="input-label" placeholder="Otro gasto fijo">
+<input type="number" id="extra_fijo1_valor">
+</div>
+
+<div class="row">
+<input type="text" id="extra_fijo2_nombre" class="input-label" placeholder="Otro gasto fijo">
+<input type="number" id="extra_fijo2_valor">
+</div>
+
+<!-- GASTOS DIARIOS -->
+<div class="section-title">Gastos Variables Diarios</div>
+
+<input id="item" placeholder="Concepto">
+
+<select id="rubro">
+<option>Alimentos</option>
+<option>Supermercado</option>
+<option>Restaurantes</option>
+<option>Café / Delivery</option>
+<option>Transporte</option>
+<option>Combustible</option>
+<option>Uber / Taxi</option>
+<option>Salud</option>
+<option>Farmacia</option>
+<option>Educación</option>
+<option>Ocio</option>
+<option>Viajes</option>
+<option>Hogar</option>
+<option>Indumentaria</option>
+<option>Tecnología</option>
+<option>Impuestos</option>
+<option>Deudas</option>
+<option>Inversiones</option>
+<option>Ahorro</option>
+<option>Suscripciones</option>
+<option>Otros</option>
+</select>
+
+<input id="monto" type="number" placeholder="Monto">
+
+<button class="btn add" onclick="agregar()">Agregar</button>
+
+<!-- FILTROS -->
+<div class="row">
+<select id="filtroMes" onchange="render()">
+<option value="">Mes</option>
+<option value="1">Ene</option><option value="2">Feb</option>
+<option value="3">Mar</option><option value="4">Abr</option>
+<option value="5">May</option><option value="6">Jun</option>
+<option value="7">Jul</option><option value="8">Ago</option>
+<option value="9">Sep</option><option value="10">Oct</option>
+<option value="11">Nov</option><option value="12">Dic</option>
+</select>
+
+<select id="filtroAno" onchange="render()">
+<option value="">Año</option>
+<option>2024</option><option>2025</option><option>2026</option>
+</select>
+
+<select id="filtroRubro" onchange="render()">
+<option value="">Rubro</option>
+<option>Alimentos</option><option>Transporte</option>
+<option>Ocio</option><option>Salud</option>
+<option>Impuestos</option><option>Otros</option>
+</select>
+</div>
+
+<div id="lista"></div>
+
+<canvas id="grafico" width="300" height="300"></canvas>
+
+<div class="leyenda" id="leyenda"></div>
+
+<div class="total" id="total">$0</div>
+
+<button class="btn save" onclick="guardar()">Guardar</button>
+
+<!-- BOTON ABAJO -->
+<button class="btn back" onclick="volver()">← Volver al menú</button>
+
+</div>
+
+<script>
+
+let gastos = JSON.parse(localStorage.getItem("gastosDiarios")) || {};
+gastos = Array.isArray(gastos) ? gastos : [];
+
+let gastosFijos = JSON.parse(localStorage.getItem("gastosFijos")) || {};
+
+function volver(){
+  window.location.href="index.html";
+}
+
+function v(id){
+  return Number(document.getElementById(id).value)||0;
+}
+
+function agregar(){
+  const item=document.getElementById("item").value.trim();
+  const rubro=document.getElementById("rubro").value;
+  const monto=Number(document.getElementById("monto").value);
+
+  if(!item||!monto)return;
+
+  gastos.push({item,rubro,monto,fechaISO:new Date().toISOString()});
+  guardarLocal();
+  render();
+
+  document.getElementById("item").value="";
+  document.getElementById("monto").value="";
+}
+
+function eliminar(i){
+  gastos.splice(i,1);
+  guardarLocal();
+  render();
+}
+
+function pasaFiltros(g){
+  const mes=filtroMes.value;
+  const ano=filtroAno.value;
+  const rubro=filtroRubro.value;
+
+  const fecha=new Date(g.fechaISO);
+
+  if(mes && fecha.getMonth()+1!=mes)return false;
+  if(ano && fecha.getFullYear()!=ano)return false;
+  if(rubro && g.rubro!=rubro)return false;
+
+  return true;
+}
+
+function render(){
+  const lista=document.getElementById("lista");
+  lista.innerHTML="";
+
+  let totalDiario=0;
+  const filtrados=gastos.filter(pasaFiltros);
+
+  filtrados.forEach((g,i)=>{
+    totalDiario+=g.monto;
+
+    lista.innerHTML+=`
+      <div class="item">
+        ${g.item} - $${g.monto}
+        <span onclick="eliminar(${i})">❌</span>
+      </div>
+    `;
+  });
+
+  dibujarGrafico(filtrados);
+  calcularTotal(totalDiario);
+}
+
+function calcularTotal(totalDiario){
+
+  const totalFijos=
+    v("alquiler")+v("auto")+v("educacion")+v("servicios")+
+    v("extra_fijo1_valor")+v("extra_fijo2_valor");
+
+  const total=totalFijos+totalDiario;
+
+  document.getElementById("total").innerText="$"+total.toLocaleString("es-AR");
+}
+
+function dibujarGrafico(lista){
+
+  const ctx=document.getElementById("grafico").getContext("2d");
+  ctx.clearRect(0,0,300,300);
+
+  let porRubro={};
+
+  lista.forEach(g=>{
+    porRubro[g.rubro]=(porRubro[g.rubro]||0)+g.monto;
+  });
+
+  const total=Object.values(porRubro).reduce((a,b)=>a+b,0);
+  if(total===0)return;
+
+  let start=0;
+  let i=0;
+  const colores=["#4cd964","#ff6b6b","#5ac8fa","#ffd60a","#bf5af2","#ff9f0a"];
+
+  const leyenda=document.getElementById("leyenda");
+  leyenda.innerHTML="";
+
+  Object.entries(porRubro).forEach(([r,m])=>{
+    const porcentaje=((m/total)*100).toFixed(1);
+    const slice=(m/total)*2*Math.PI;
+    const color=colores[i%colores.length];
+
+    ctx.beginPath();
+    ctx.moveTo(150,150);
+    ctx.arc(150,150,120,start,start+slice);
+    ctx.fillStyle=color;
+    ctx.fill();
+
+    start+=slice;
+
+    leyenda.innerHTML+=`
+      <div style="display:flex; justify-content:space-between;">
+        <span>${r}</span>
+        <span>${porcentaje}% • $${m.toLocaleString()}</span>
+      </div>
+    `;
+
+    i++;
+  });
+}
+
+function guardar(){
+
+  gastosFijos={
+    alquiler:v("alquiler"),
+    auto:v("auto"),
+    educacion:v("educacion"),
+    servicios:v("servicios"),
+    extra1:v("extra_fijo1_valor"),
+    extra2:v("extra_fijo2_valor")
+  };
+
+  localStorage.setItem("gastosFijos", JSON.stringify(gastosFijos));
+  guardarLocal();
+
+  const total=
+    Object.values(gastosFijos).reduce((a,b)=>a+b,0)+
+    gastos.reduce((a,b)=>a+b.monto,0);
+
+  localStorage.setItem("misGastos", JSON.stringify({total}));
+
+  alert("Guardado ✔");
+}
+
+function guardarLocal(){
+  localStorage.setItem("gastosDiarios", JSON.stringify(gastos));
+}
+
+window.onload=function(){
+  Object.keys(gastosFijos).forEach(k=>{
+    if(document.getElementById(k)){
+      document.getElementById(k).value=gastosFijos[k];
+    }
+  });
+  render();
+}
+
+document.querySelectorAll("input").forEach(el=>{
+  el.addEventListener("input",render);
+});
+
+</script>
+
+</body>
+</html>
