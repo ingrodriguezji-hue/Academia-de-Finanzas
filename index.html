@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -117,13 +117,40 @@
       text-decoration: none;
     }
 
+    /* 🔥 BOTONES CON ESTILO 3D */
     .menu-button {
-      padding: 18px;
+      padding: 16px;
       border-radius: 20px;
       font-weight: 700;
       background: rgba(255, 255, 255, 0.07);
       border: 1px solid rgba(212, 175, 55, 0.3);
-      text-align: center;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      justify-content: flex-start;
+      backdrop-filter: blur(12px);
+      transition: all 0.25s ease;
+      box-shadow: inset 0 1px 1px rgba(255,255,255,0.05),
+                  0 10px 20px rgba(0,0,0,0.4);
+    }
+
+    .menu-button:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 15px 25px rgba(0,0,0,0.6);
+      border-color: #d4af37;
+    }
+
+    /* 🔥 ICONO 3D */
+    .icon-3d {
+      font-size: 26px;
+      padding: 10px;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #1a3a46, #0c1e26);
+      box-shadow: 
+        inset 0 2px 4px rgba(255,255,255,0.05),
+        inset 0 -2px 6px rgba(0,0,0,0.6),
+        0 4px 10px rgba(0,0,0,0.5);
+      color: #f9e27d;
     }
 
     .footer {
@@ -139,7 +166,10 @@
 
 <div class="app-container">
 
-  <div class="user-btn" onclick="irUsuario()">Perfil</div>
+  <div class="user-btn" onclick="irUsuario()">
+    <span class="material-symbols-rounded">person</span>
+    Perfil
+  </div>
 
   <div class="logo-header">
     <img src="logo.png" alt="Finanzas">
@@ -150,11 +180,42 @@
   </div>
 
   <div class="menu">
-    <a href="Registros-gastos-diarios.html"><div class="menu-button">Gastos Diarios</div></a>
-    <a href="gastos-mensuales.html"><div class="menu-button">Gastos Mensuales</div></a>
-    <a href="cuadro-de-resultados.html"><div class="menu-button">Análisis</div></a>
-    <a href="perfil-inversor-mas-cartera.html"><div class="menu-button">Perfil Inversor</div></a>
-    <a href="Calculadora-de-interes-compuesto.html"><div class="menu-button">Interés</div></a>
+
+    <a href="Registros-gastos-diarios.html">
+      <div class="menu-button">
+        <span class="material-symbols-rounded icon-3d">receipt_long</span>
+        Gastos Diarios
+      </div>
+    </a>
+
+    <a href="gastos-mensuales.html">
+      <div class="menu-button">
+        <span class="material-symbols-rounded icon-3d">calendar_month</span>
+        Gastos Mensuales
+      </div>
+    </a>
+
+    <a href="cuadro-de-resultados.html">
+      <div class="menu-button">
+        <span class="material-symbols-rounded icon-3d">insights</span>
+        Análisis
+      </div>
+    </a>
+
+    <a href="perfil-inversor-mas-cartera.html">
+      <div class="menu-button">
+        <span class="material-symbols-rounded icon-3d">trending_up</span>
+        Perfil Inversor
+      </div>
+    </a>
+
+    <a href="Calculadora-de-interes-compuesto.html">
+      <div class="menu-button">
+        <span class="material-symbols-rounded icon-3d">calculate</span>
+        Interés
+      </div>
+    </a>
+
   </div>
 
   <div class="footer">
@@ -169,14 +230,12 @@ function irUsuario() {
 }
 </script>
 
-<!-- SERVICE WORKER -->
 <script>
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("./service-worker.js");
 }
 </script>
 
-<!-- BOTON INSTALAR FORZADO -->
 <script>
 let deferredPrompt;
 
