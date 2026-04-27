@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -89,9 +89,9 @@ h1 { font-size: 20px; font-weight: 600; }
 
 .card-small h2 { font-size: 14px; }
 
-.activos { color: #4cd964; text-shadow: 0 0 10px rgba(76, 217, 100, 0.3); }
-.pasivos { color: #ff6b6b; text-shadow: 0 0 10px rgba(255, 107, 107, 0.3); }
-.patrimonio-color { color: #4facfe; text-shadow: 0 0 10px rgba(79, 172, 254, 0.3); }
+.activos { color: #4cd964; }
+.pasivos { color: #ff6b6b; }
+.patrimonio-color { color: #4facfe; }
 
 .resultado {
   padding: 25px;
@@ -123,7 +123,6 @@ h1 { font-size: 20px; font-weight: 600; }
   display: flex;
   align-items: center;
   gap: 8px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
 .recom-item {
@@ -134,18 +133,12 @@ h1 { font-size: 20px; font-weight: 600; }
     padding: 15px;
     border-radius: 12px;
     margin-top: 10px;
-    font-size: 16px;
 }
 
 .item-label {
     display: flex;
     align-items: center;
     gap: 12px;
-}
-
-.recom-icon {
-    font-size: 24px;
-    color: #8faab3;
 }
 </style>
 </head>
@@ -163,19 +156,16 @@ h1 { font-size: 20px; font-weight: 600; }
 
   <div class="cards-row">
     <div class="card card-small">
-      <span class="material-symbols-rounded activos icon-3d">account_balance_wallet</span>
       <span class="activos">Activos</span>
       <h2 id="ingresos">$0</h2>
     </div>
 
     <div class="card card-small">
-      <span class="material-symbols-rounded pasivos icon-3d">credit_card</span>
       <span class="pasivos">Pasivos</span>
       <h2 id="gastos">$0</h2>
     </div>
 
     <div class="card card-small">
-      <span class="material-symbols-rounded patrimonio-color icon-3d">monitoring</span>
       <span class="patrimonio-color">Neto</span>
       <h2 id="patrimonio">$0</h2>
     </div>
@@ -186,41 +176,24 @@ h1 { font-size: 20px; font-weight: 600; }
     <div class="label" id="estado"></div>
   </div>
 
-  <h2 class="section-title">
-    <span class="material-symbols-rounded">insights</span> 
-    Recomendaciones
-  </h2>
+  <h2 class="section-title">Recomendaciones</h2>
 
-  <div class="card" style="text-align: left;">
-    <div class="item-label" style="margin-bottom: 10px;">
-        <span class="material-symbols-rounded" style="color: #cbdce0; font-size: 24px;">safe</span>
-        <span style="font-size: 16px; color: #cbdce0;">Fondo de Reserva (6 meses)</span>
-    </div>
+  <div class="card">
     <h2 id="fondoObjetivo">$0</h2>
-
     <div class="recom-item">
-        <div class="item-label">
-            <span class="material-symbols-rounded recom-icon">calendar_month</span>
-            <span>Aporte mensual (10%)</span>
-        </div>
+        <span>Aporte mensual (10%)</span>
         <span id="reservaMensual">$0</span>
     </div>
   </div>
 
-  <div class="card" style="text-align: left;">
+  <div class="card">
     <div class="recom-item">
-        <div class="item-label">
-            <span class="material-symbols-rounded recom-icon">savings</span>
-            <span>Ahorro</span>
-        </div>
+        <span>Ahorro</span>
         <span id="ahorro">$0</span>
     </div>
 
     <div class="recom-item">
-        <div class="item-label">
-            <span class="material-symbols-rounded recom-icon">query_stats</span>
-            <span>Inversión</span>
-        </div>
+        <span>Inversión</span>
         <span id="inversion">$0</span>
     </div>
   </div>
@@ -232,54 +205,59 @@ function volverMenu() {
   window.location.href = "index.html";
 }
 
-// 🔥 ARREGLADO: estaba roto el script
-function obtenerIngresos() {
-  return Number(localStorage.getItem("totalIngresos")) || 0;
+// 🔒 Sanitiza número
+function num(v) {
+  return Number(v) || 0;
 }
 
-// 🔥 NUEVO: función backup más robusta
+// 🔹 INGRESOS
 function obtenerIngresosTotal() {
-  const estructurado = JSON.parse(localStorage.getItem("misIngresos")) || {};
+  const data = JSON.parse(localStorage.getItem("misIngresos")) || {};
 
   let total =
-    (estructurado.sueldo || 0) +
-    (estructurado.secundario || 0) +
-    (estructurado.pasivo || 0) +
-    (estructurado.otro1 || 0) +
-    (estructurado.otro2 || 0) +
-    (estructurado.otro3 || 0);
+    num(data.sueldo) +
+    num(data.secundario) +
+    num(data.pasivo) +
+    num(data.otro1) +
+    num(data.otro2) +
+    num(data.otro3);
 
-  if (!total || total === 0) {
-    total = obtenerIngresos();
+  if (total === 0) {
+    total = num(localStorage.getItem("totalIngresos"));
   }
 
   return total;
 }
 
-// 🔥 NUEVO: función debug
-function debugFinanzas() {
-  console.log("DEBUG INGRESOS:", localStorage.getItem("misIngresos"));
-  console.log("DEBUG TOTAL:", localStorage.getItem("totalIngresos"));
-  console.log("DEBUG GASTOS:", localStorage.getItem("misGastos"));
+// 🔹 GASTOS
+function obtenerGastosTotal() {
+  const data = JSON.parse(localStorage.getItem("misGastos")) || {};
+  let total = 0;
+
+  Object.values(data).forEach(v => {
+    total += num(v);
+  });
+
+  return total;
 }
 
 function calcularResultados() {
 
   const totalIngresos = obtenerIngresosTotal();
-
-  const gastosData = JSON.parse(localStorage.getItem("misGastos")) || {};
-  let totalGastos = 0;
-
-  Object.values(gastosData).forEach(v => totalGastos += v || 0);
-
+  const totalGastos = obtenerGastosTotal();
   const resultado = totalIngresos - totalGastos;
 
-  document.getElementById("ingresos").innerText = "$" + totalIngresos.toLocaleString();
-  document.getElementById("gastos").innerText = "$" + totalGastos.toLocaleString();
-  document.getElementById("patrimonio").innerText = "$" + resultado.toLocaleString();
+  // refs
+  const resultadoBox = document.getElementById("resultadoBox");
+  const estado = document.getElementById("estado");
 
-  document.getElementById("resValue").innerText = "Resultado: $" + resultado.toLocaleString();
+  // render
+  document.getElementById("ingresos").innerText = "$" + totalIngresos.toLocaleString("es-AR");
+  document.getElementById("gastos").innerText = "$" + totalGastos.toLocaleString("es-AR");
+  document.getElementById("patrimonio").innerText = "$" + resultado.toLocaleString("es-AR");
+  document.getElementById("resValue").innerText = "Resultado: $" + resultado.toLocaleString("es-AR");
 
+  // estado
   if (resultado >= 0) {
     resultadoBox.className = "card resultado positivo";
     estado.innerText = "✔ Flujo positivo";
@@ -288,17 +266,19 @@ function calcularResultados() {
     estado.innerText = "⚠ Estás gastando más de lo que ganás";
   }
 
-  document.getElementById("fondoObjetivo").innerText = "$" + (totalGastos * 6).toLocaleString();
-  document.getElementById("reservaMensual").innerText = "$" + (totalIngresos * 0.10).toLocaleString();
-  document.getElementById("ahorro").innerText = "$" + (totalIngresos * 0.10).toLocaleString();
-  document.getElementById("inversion").innerText = "$" + (totalIngresos * 0.15).toLocaleString();
+  // métricas
+  document.getElementById("fondoObjetivo").innerText = "$" + (totalGastos * 6).toLocaleString("es-AR");
+  document.getElementById("reservaMensual").innerText = "$" + (totalIngresos * 0.10).toLocaleString("es-AR");
+  document.getElementById("ahorro").innerText = "$" + (totalIngresos * 0.10).toLocaleString("es-AR");
+  document.getElementById("inversion").innerText = "$" + (totalIngresos * 0.15).toLocaleString("es-AR");
 
-  debugFinanzas();
+  // debug útil
+  console.log("INGRESOS:", localStorage.getItem("misIngresos"));
+  console.log("GASTOS:", localStorage.getItem("misGastos"));
 }
 
-// 🔥 NUEVO: auto refresh si cambian datos
+// auto refresh
 window.addEventListener("storage", calcularResultados);
-
 window.onload = calcularResultados;
 </script>
 
